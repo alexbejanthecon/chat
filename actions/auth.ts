@@ -1,6 +1,6 @@
-import {LOGIN, LOGOUT} from '../constants';
-export function onLogin(user: any) {
+import {LOGIN, LOGOUT} from '../constants/actionTypes';
 
+export function onLogin(user: any) {
     return {
         type: LOGIN,
         payload: user

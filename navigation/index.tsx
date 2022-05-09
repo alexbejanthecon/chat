@@ -8,23 +8,24 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
+import {ColorSchemeName, Pressable, TouchableOpacity} from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
-import ModalScreen from '../screens/ModalScreen';
+import Contacts from '../screens/Contacts';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import TabOneScreen from '../screens/TabOneScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
-import configureStore from "../store/configureStore";
 import Login from "../screens/login";
-
-const user: any = configureStore().getState().auth;
-
+import Chat from "../screens/chat";
+import { AntDesign } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+
+
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
@@ -43,11 +44,12 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 function RootNavigator() {
   return (
     <Stack.Navigator>
-        <Stack.Screen name="Root" component={ Login } />
+        <Stack.Screen name="Login" component={ Login } />
         <Stack.Screen name="Tabs" component={BottomTabNavigator} options={{ headerShown: false }} />
+        <Stack.Screen name="Chat" component={Chat} />
         <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
+        <Stack.Screen name="Contacts" component={Contacts} />
       </Stack.Group>
     </Stack.Navigator>
   );
@@ -72,42 +74,19 @@ function BottomTabNavigator() {
         name="TabOne"
         component={TabOneScreen}
         options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate('Modal')}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}>
-              <FontAwesome
-                name="info-circle"
-                size={25}
-                color={Colors[colorScheme].text}
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          ),
+          title: 'Status',
+          tabBarIcon: ({ color }) => <AntDesign name="user" size={30} color={color} />,
         })}
       />
       <BottomTab.Screen
         name="TabTwo"
         component={TabTwoScreen}
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'Chats',
+          tabBarIcon: ({ color }) => <Entypo name="chat" size={30} color={color} />,
         }}
       />
     </BottomTab.Navigator>
   );
 }
 
-/**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
- */
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
-}

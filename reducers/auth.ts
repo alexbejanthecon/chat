@@ -1,4 +1,4 @@
-import {LOGIN, LOGOUT} from '../constants';
+import {LOGIN, LOGOUT} from '../constants/actionTypes';
 
 const initialState = {
     user: null
@@ -6,12 +6,11 @@ const initialState = {
 const loginReducer = (state = initialState, action: any) => {
     switch (action.type) {
         case LOGIN:
-            console.log("user in reducer",action.payload);
             return {
                 ...state,
                 user: {
-                    email: action.payload.email,
-                    password: action.payload.password
+                    name: action.payload.name,
+                    status: action.payload.status
                 }
             }
         case LOGOUT:
@@ -21,7 +20,6 @@ const loginReducer = (state = initialState, action: any) => {
             }
 
         default:
-            console.log("default case");
             return state;
     }
 }

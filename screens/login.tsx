@@ -3,34 +3,31 @@ import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
 import {useState} from "react";
 import {useDispatch} from "react-redux";
-import {onLogin} from "../actions/auth";
-import configureStore from "../store/configureStore";
+import * as functions from "../functions/index";
+import {authActions} from "../actions";
 
 
 export default function Login({ navigation }: RootTabScreenProps<'TabOne'>) {
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [name, setName] = useState('User');
+    const [password, setPassword] = useState('parola');
     const dispatch = useDispatch();
 
     const handleLogin = async () => {
         const params = {
-            email : email,
-            password : password
+            name : name,
+            password : password,
+            status: 'Online'
         }
 
-        console.log(params)
+        const response  = await functions.onLogin(params);
 
-        if(email === '' || password === '') {
-            Alert.alert("Error", "Login fields cannot be empty!");
-        }
-        if(email !== 'email@test.com' && password !== 'password') {
-            Alert.alert("Error", "Incorrect email or password. Please check and try again!");
-        } else {
-            await dispatch(onLogin(params));
+        if(response.success) {
+            dispatch(authActions.onLogin(response.data));
             navigation.navigate('Tabs');
+        } else {
+            Alert.alert('Error', response.data.toString() );
         }
-
     }
 
     return (
@@ -39,15 +36,17 @@ export default function Login({ navigation }: RootTabScreenProps<'TabOne'>) {
             <View style={styles.inputView}>
                 <TextInput
                     style={styles.TextInput}
-                    placeholder="Email."
+                    placeholder="Name."
+                    value={"User"}
                     placeholderTextColor="#003f5c"
-                    onChangeText={(email) => setEmail(email)}
+                    onChangeText={(name) => setName(name)}
                 />
             </View>
 
             <View style={styles.inputView}>
                 <TextInput
                     style={styles.TextInput}
+                    value={"parola"}
                     placeholder="Password."
                     placeholderTextColor="#003f5c"
                     secureTextEntry={true}
